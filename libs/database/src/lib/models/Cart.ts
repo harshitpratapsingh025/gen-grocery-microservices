@@ -1,7 +1,11 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { CartItem as ICartItem } from '@org/types';
 
-export interface CartDocument extends ICartItem, Document {}
+export interface CartDocument extends Document {
+  productId: string;
+  quantity: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
 const cartSchema = new Schema({
   productId: {

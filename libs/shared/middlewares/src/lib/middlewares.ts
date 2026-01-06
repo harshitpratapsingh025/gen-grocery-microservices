@@ -5,6 +5,7 @@ export const errorHandler = (
   err: Error | AppError,
   req: Request,
   res: Response,
+  next: NextFunction
 ) => {
   console.error('[ERROR]', err);
 
@@ -27,7 +28,7 @@ export const errorHandler = (
   const message = err.message || 'Internal Server Error';
   const code = (err as AppError).code;
 
-  res.status(statusCode).json({
+  return res.status(statusCode).json({
     success: false,
     message,
     ...(code && { error: code }),

@@ -1,7 +1,14 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { Product as IProduct, ProductCategory } from '@org/types';
+import { ProductCategory } from '@org/types';
 
-export interface ProductDocument extends IProduct, Document {}
+export interface ProductDocument extends Document {
+  name: string;
+  price: number;
+  category: ProductCategory;
+  imageUrl: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
 const productSchema = new Schema({
   name: {
