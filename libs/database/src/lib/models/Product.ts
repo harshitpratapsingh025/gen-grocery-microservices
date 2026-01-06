@@ -1,0 +1,36 @@
+import mongoose, { Schema, Document } from 'mongoose';
+import { Product as IProduct, ProductCategory } from '@org/types';
+
+export interface ProductDocument extends IProduct, Document {}
+
+const productSchema = new Schema({
+  name: {
+    type: String,
+    required: [true, 'Product name is required'],
+    trim: true,
+    minlength: [2, 'Name must be at least 2 characters'],
+    maxlength: [100, 'Name cannot exceed 100 characters']
+  },
+  price: {
+    type: Number,
+    required: [true, 'Price is required'],
+    min: [0, 'Price cannot be negative']
+  },
+  category: {
+    type: String,
+    required: [true, 'Category is required'],
+    enum: Object.values(ProductCategory)
+  },
+  imageUrl: {
+    type: String,
+    required: [true, 'Image URL is required'],
+    validate: {
+      validator: (v: string) => /^https?:\/\/.+/.test(v),
+      message: 'Invalid image URL'
+    }
+  }
+}, {
+  timestamps: true
+});
+
+export const ProductModel = mongoose.model('Product', productSchema);
