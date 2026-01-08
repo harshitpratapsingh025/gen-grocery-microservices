@@ -10,6 +10,9 @@ export const setupProxyRoutes = (app: Express, config: GatewayConfig) => {
   app.use('/api/products', createProxyMiddleware({
     target: config.productServiceUrl,
     changeOrigin: true,
+    pathRewrite: {
+      '^/api/products': ''
+    },
     on: {
       proxyReq: (proxyReq, req: Request) => {
         Logger.info(SERVICE_NAME, `${req.method} ${req.originalUrl} → Product Service`);
@@ -29,9 +32,19 @@ export const setupProxyRoutes = (app: Express, config: GatewayConfig) => {
   app.use('/api/cart', createProxyMiddleware({
     target: config.cartServiceUrl,
     changeOrigin: true,
+    pathRewrite: {
+      '^/api/cart': ''
+    },
     on: {
       proxyReq: (proxyReq, req: Request) => {
         Logger.info(SERVICE_NAME, `${req.method} ${req.originalUrl} → Cart Service`);
+        // Re-stream parsed body for POST requests
+        if (req.body && (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH')) {
+          const bodyData = JSON.stringify(req.body);
+          proxyReq.setHeader('Content-Type', 'application/json');
+          proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData));
+          proxyReq.write(bodyData);
+        }
       },
       error: (err, req, res) => {
         Logger.error(SERVICE_NAME, 'Cart Service Error', err.message);

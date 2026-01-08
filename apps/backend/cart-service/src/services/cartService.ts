@@ -5,7 +5,7 @@ import { getCartServiceConfig } from '@org/config';
 const config = getCartServiceConfig();
 
 export const getCart = async () => {
-  return await CartModel.find().sort({ createdAt: -1 });
+  return await CartModel.find().populate('productId').sort({ createdAt: -1 });
 };
 
 export const addToCart = async (productId: string, quantity: number) => {
@@ -30,12 +30,23 @@ export const addToCart = async (productId: string, quantity: number) => {
   return await cartItem.save();
 };
 
-export const removeFromCart = async (id: string) => {
-  const cartItem = await CartModel.findByIdAndDelete(id);
+export const removeFromCart = async (productId: string) => {
+  const cartItem = await CartModel.findOneAndDelete({ productId });
   
   if (!cartItem) {
     throw new AppError('Cart item not found', 404);
   }
 
   return cartItem;
+};
+
+export const updateCartQuantity = async (productId: string, quantity: number) => {
+  const cartItem = await CartModel.findOne({ productId });
+  
+  if (!cartItem) {
+    throw new AppError('Cart item not found', 404);
+  }
+
+  cartItem.quantity = quantity;
+  return await cartItem.save();
 };

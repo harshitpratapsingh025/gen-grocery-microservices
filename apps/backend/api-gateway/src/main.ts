@@ -35,6 +35,12 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Test POST route
+app.post('/test', (req, res) => {
+  console.log('Gateway test POST hit');
+  res.json({ message: 'Gateway POST works', body: req.body });
+});
+
 // Setup Proxy Routes
 setupProxyRoutes(app, config);
 

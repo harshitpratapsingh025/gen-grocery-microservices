@@ -26,6 +26,7 @@ export const getServiceConfig = (): ServiceConfig => ({
 
 export const getGatewayConfig = (): GatewayConfig => ({
   ...getServiceConfig(),
+  ...getCartServiceConfig(),
   productServiceUrl: process.env.PRODUCT_SERVICE_URL || 'http://localhost:5001',
   cartServiceUrl: process.env.CART_SERVICE_URL || 'http://localhost:5002'
 });

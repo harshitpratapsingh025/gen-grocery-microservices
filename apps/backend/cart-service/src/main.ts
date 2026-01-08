@@ -33,7 +33,7 @@ app.get('/health', (req, res) => {
 });
 
 // Routes
-app.use('/api/cart', cartRoutes);
+app.use('/', cartRoutes);
 
 // Error Handler
 app.use(errorHandler);
